@@ -1,0 +1,19 @@
+{
+  "api_meta": {
+    "page": 1,
+    "pages": 1,
+    "per_page": 20000,
+    "total": 17556,
+    "sourceid": "2",
+    "lastupdated": "2026-04-08"
+  },
+  "indicator": {
+    "id": "NY.GDP.PCAP.KD",
+    "value": "GDP per capita (constant 2015 US$)"
+  },
+  "source": {},
+  "rows": 14306,
+  "countries": 261,
+  "min_year": 1960,
+  "max_year": 2024
+}

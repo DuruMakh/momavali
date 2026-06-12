@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Government spending and revenue when real GDP per capita was near $10k through 1990</title>
+  <style>
+    :root {
+      --bg: #f7f5ef;
+      --paper: #ffffff;
+      --ink: #17202a;
+      --muted: #64707d;
+      --line: #d9d4c8;
+      --soft: #ece7db;
+      --blue: #245c7a;
+      --teal: #128178;
+      --red: #b84e45;
+      --gold: #b47a1f;
+      --green: #4f7d42;
+      --shadow: 0 12px 30px rgba(23, 32, 42, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.45;
+    }
+
+    .page {
+      width: min(1200px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 44px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: end;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 48px);
+      line-height: 1.04;
+      letter-spacing: 0;
+      max-width: 920px;
+    }
+
+    .subtitle {
+      margin: 12px 0 0;
+      color: var(--muted);
+      max-width: 860px;
+      font-size: 15px;
+    }
+
+    .source {
+      color: var(--muted);
+      font-size: 12px;
+      max-width: 300px;
+      text-align: right;
+    }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin: 22px 0;
+    }
+
+    .view-switcher {
+      display: inline-flex;
+      gap: 4px;
+      margin-top: 18px;
+      padding: 4px;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .view-switcher button {
+      border: 0;
+      border-radius: 6px;
+      padding: 9px 14px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+    }
+
+    .view-switcher button.active {
+      background: var(--paper);
+      color: var(--ink);
+      box-shadow: 0 2px 10px rgba(23, 32, 42, 0.08);
+    }
+
+    .kpi, .panel {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .kpi {
+      padding: 14px 16px;
+      min-height: 92px;
+    }
+
+    .kpi .label {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .kpi .value {
+      margin-top: 8px;
+      font-weight: 700;
+      font-size: 28px;
+      line-height: 1.05;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(360px, 0.75fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 16px;
+      overflow: hidden;
+    }
+
+    .panel h2 {
+      margin: 0 0 4px;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .note {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+    .axis text, .label-text {
+      fill: var(--muted);
+      font-size: 11px;
+    }
+
+    .axis line, .axis path, .grid-line {
+      stroke: var(--line);
+      stroke-width: 1;
+    }
+
+    .dot {
+      fill: var(--teal);
+      stroke: white;
+      stroke-width: 1.5;
+      cursor: pointer;
+    }
+
+    .dot.high { fill: var(--red); }
+    .dot:hover, .dot:focus { stroke: var(--ink); stroke-width: 2.5; outline: none; }
+
+    .bar { fill: var(--blue); }
+    .bar.high { fill: var(--red); }
+    .bar.low { fill: var(--green); }
+
+    .tooltip {
+      position: fixed;
+      pointer-events: none;
+      transform: translate(12px, 12px);
+      background: rgba(23, 32, 42, 0.94);
+      color: white;
+      padding: 9px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      max-width: 230px;
+      opacity: 0;
+      transition: opacity 120ms ease;
+      z-index: 10;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 8px 0 14px;
+    }
+
+    input, select {
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--ink);
+      border-radius: 6px;
+      padding: 9px 10px;
+      font: inherit;
+      min-height: 38px;
+    }
+
+    input { flex: 1 1 220px; }
+    select { flex: 0 0 210px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 9px 8px;
+      border-bottom: 1px solid var(--soft);
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: #faf9f5;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .table-wrap { max-height: 520px; overflow: auto; border: 1px solid var(--soft); border-radius: 6px; }
+
+    .legend {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
+    .legend span::before {
+      content: "";
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 6px;
+      background: var(--teal);
+    }
+
+    .legend .high::before { background: var(--red); }
+
+    footer {
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 860px) {
+      .page { width: min(100% - 20px, 1200px); padding-top: 18px; }
+      header, .grid { grid-template-columns: 1fr; }
+      .source { text-align: left; max-width: none; }
+      .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .panel { padding: 12px; }
+      th, td { padding: 8px 6px; }
+    }
+
+    @media (max-width: 520px) {
+      .kpis { grid-template-columns: 1fr; }
+      .controls { display: grid; }
+      input, select { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div>
+        <h1>Government finance at roughly $10k real GDP per capita through 1990</h1>
+        <p class="subtitle">Each country is shown only if its matched year was 1990 or earlier: the year where Maddison real GDP per capita was closest to 10,000 international dollars in 2011 prices, within the 9,000-11,000 band. Use the switcher to compare government spending and revenue as shares of GDP. Kuwait is excluded as an outlier.</p>
+        <div class="view-switcher" aria-label="Metric switcher">
+          <button type="button" class="active" data-view="spending">Spending</button>
+          <button type="button" data-view="revenue">Revenue</button>
+        </div>
+      </div>
+      <div class="source">GDP: Maddison Project Database 2023 via Our World in Data.<br />Spending and revenue: IMF Public Finances in Modern History via Our World in Data.</div>
+    </header>
+
+    <section class="kpis" aria-label="Summary statistics">
+      <div class="kpi"><div class="label">Countries</div><div class="value" id="kpiCountries">-</div></div>
+      <div class="kpi"><div class="label">Year span</div><div class="value" id="kpiYears">-</div></div>
+      <div class="kpi"><div class="label" id="kpiMedianLabel">Median spending</div><div class="value" id="kpiMedian">-</div></div>
+      <div class="kpi"><div class="label" id="kpiAverageLabel">Average spending</div><div class="value" id="kpiAverage">-</div></div>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <h2 id="scatterTitle">When countries reached the threshold</h2>
+        <p class="note" id="scatterNote">Scatterplot: year on the x-axis, government spending on the y-axis. Red points are above 30% of GDP.</p>
+        <svg id="scatter" viewBox="0 0 820 430" role="img" aria-label="Scatterplot of year and government finance share"></svg>
+        <div class="legend" id="legend"><span>Spending 30% or below</span><span class="high">Spending above 30%</span></div>
+      </div>
+
+      <div class="panel">
+        <h2 id="barsTitle">Highest and lowest spending</h2>
+        <p class="note" id="barsNote">Top and bottom countries by spending share at the matched GDP-per-capita year.</p>
+        <svg id="bars" viewBox="0 0 460 520" role="img" aria-label="Bar chart of highest and lowest government finance shares"></svg>
+      </div>
+    </section>
+
+    <section class="panel" style="margin-top:16px;">
+      <h2>Country table</h2>
+      <p class="note">Search or change sorting to inspect exact values.</p>
+      <div class="controls">
+        <input id="search" type="search" placeholder="Search country" aria-label="Search country" />
+        <select id="sort" aria-label="Sort table">
+          <option value="yearAsc">Year, oldest first</option>
+          <option value="yearDesc">Year, newest first</option>
+          <option value="metricDesc">Metric, highest first</option>
+          <option value="metricAsc">Metric, lowest first</option>
+          <option value="countryAsc">Country, A-Z</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Country</th>
+              <th class="num">GDP per capita</th>
+              <th class="num" id="valueHeader">Gov spending</th>
+              <th class="num">Year</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>Values are rounded for display. GDP per capita is real PPP, international-$ in 2011 prices. Spending and revenue are shown as % of GDP.</footer>
+  </main>
+
+  <div class="tooltip" id="tooltip"></div>
+
+  <script>
+    const datasets = {"spending": [{"country": "United States", "gdp": 10009.72, "value": 4.52, "year": 1922}, {"country": "Switzerland", "gdp": 9997.38, "value": 5.92, "year": 1934}, {"country": "United Kingdom", "gdp": 9988.0, "value": 19.47, "year": 1938}, {"country": "Australia", "gdp": 9828.0, "value": 7.07, "year": 1940}, {"country": "New Zealand", "gdp": 10042.0, "value": 18.53, "year": 1940}, {"country": "Canada", "gdp": 9645.0, "value": 22.76, "year": 1941}, {"country": "Denmark", "gdp": 9776.0, "value": 11.19, "year": 1948}, {"country": "Sweden", "gdp": 10127.0, "value": 19.48, "year": 1949}, {"country": "Netherlands", "gdp": 9698.0, "value": 23.0, "year": 1952}, {"country": "Venezuela", "gdp": 10020.0, "value": 14.79, "year": 1954}, {"country": "Belgium", "gdp": 10010.0, "value": 20.83, "year": 1955}, {"country": "France", "gdp": 9881.0, "value": 19.89, "year": 1955}, {"country": "Norway", "gdp": 10044.0, "value": 17.81, "year": 1955}, {"country": "Germany", "gdp": 9846.0, "value": 29.53, "year": 1956}, {"country": "Iceland", "gdp": 10079.0, "value": 29.05, "year": 1957}, {"country": "Austria", "gdp": 9645.0, "value": 27.35, "year": 1959}, {"country": "Finland", "gdp": 9931.0, "value": 22.47, "year": 1960}, {"country": "Italy", "gdp": 10158.0, "value": 17.26, "year": 1961}, {"country": "Israel", "gdp": 9997.0, "value": 27.8, "year": 1965}, {"country": "Argentina", "gdp": 10076.0, "value": 12.12, "year": 1966}, {"country": "Japan", "gdp": 10370.0, "value": 20.82, "year": 1966}, {"country": "Greece", "gdp": 9900.0, "value": 25.17, "year": 1970}, {"country": "Ireland", "gdp": 9881.0, "value": 44.13, "year": 1970}, {"country": "Hong Kong", "gdp": 9787.0, "value": 11.11, "year": 1971}, {"country": "Spain", "gdp": 9885.88, "value": 13.96, "year": 1971}, {"country": "Portugal", "gdp": 10130.0, "value": 22.82, "year": 1972}, {"country": "Uruguay", "gdp": 9966.0, "value": 20.15, "year": 1979}, {"country": "South Korea", "gdp": 9756.2, "value": 14.86, "year": 1986}, {"country": "Chile", "gdp": 10005.0, "value": 19.76, "year": 1989}, {"country": "Oman", "gdp": 10327.0, "value": 36.51, "year": 1990}], "revenue": [{"country": "United States", "gdp": 10009.72, "value": 5.53, "year": 1922}, {"country": "Switzerland", "gdp": 9997.38, "value": 5.59, "year": 1934}, {"country": "United Kingdom", "gdp": 9988.0, "value": 19.47, "year": 1938}, {"country": "Australia", "gdp": 9828.0, "value": 7.58, "year": 1940}, {"country": "New Zealand", "gdp": 10042.0, "value": 18.66, "year": 1940}, {"country": "Canada", "gdp": 9645.0, "value": 17.97, "year": 1941}, {"country": "Denmark", "gdp": 9776.0, "value": 12.26, "year": 1948}, {"country": "Sweden", "gdp": 10127.0, "value": 18.74, "year": 1949}, {"country": "Netherlands", "gdp": 9698.0, "value": 25.19, "year": 1952}, {"country": "Venezuela", "gdp": 10020.0, "value": 16.62, "year": 1954}, {"country": "Belgium", "gdp": 10010.0, "value": 19.78, "year": 1955}, {"country": "France", "gdp": 9881.0, "value": 18.85, "year": 1955}, {"country": "Norway", "gdp": 10044.0, "value": 18.64, "year": 1955}, {"country": "Germany", "gdp": 9846.0, "value": 30.12, "year": 1956}, {"country": "Iceland", "gdp": 10079.0, "value": 30.26, "year": 1957}, {"country": "Austria", "gdp": 9645.0, "value": 25.19, "year": 1959}, {"country": "Finland", "gdp": 9931.0, "value": 21.94, "year": 1960}, {"country": "Italy", "gdp": 10158.0, "value": 16.69, "year": 1961}, {"country": "Israel", "gdp": 9997.0, "value": 25.08, "year": 1965}, {"country": "Argentina", "gdp": 10076.0, "value": 11.14, "year": 1966}, {"country": "Japan", "gdp": 10370.0, "value": 20.48, "year": 1966}, {"country": "Greece", "gdp": 9900.0, "value": 21.93, "year": 1970}, {"country": "Ireland", "gdp": 9881.0, "value": 40.49, "year": 1970}, {"country": "Hong Kong", "gdp": 9787.0, "value": 13.62, "year": 1971}, {"country": "Spain", "gdp": 9885.88, "value": 13.0, "year": 1971}, {"country": "Portugal", "gdp": 10130.0, "value": 15.1, "year": 1972}, {"country": "Uruguay", "gdp": 9966.0, "value": 21.15, "year": 1979}, {"country": "South Korea", "gdp": 9756.2, "value": 15.66, "year": 1986}, {"country": "Chile", "gdp": 10005.0, "value": 25.07, "year": 1989}, {"country": "Oman", "gdp": 10327.0, "value": 41.29, "year": 1990}]};
+
+    const metricMeta = {
+      spending: {
+        label: "spending",
+        title: "Government spending",
+        column: "Gov spending",
+        medianLabel: "Median spending",
+        averageLabel: "Average spending",
+        threshold: 30,
+        lowLegend: "Spending 30% or below",
+        highLegend: "Spending above 30%",
+        scatterNote: "Scatterplot: year on the x-axis, government spending on the y-axis. Red points are above 30% of GDP.",
+        barsTitle: "Highest and lowest spending",
+        barsNote: "Top and bottom countries by spending share at the matched GDP-per-capita year.",
+        axis: "Government spending (% of GDP)",
+      },
+      revenue: {
+        label: "revenue",
+        title: "Government revenue",
+        column: "Gov revenue",
+        medianLabel: "Median revenue",
+        averageLabel: "Average revenue",
+        threshold: 30,
+        lowLegend: "Revenue 30% or below",
+        highLegend: "Revenue above 30%",
+        scatterNote: "Scatterplot: year on the x-axis, government revenue on the y-axis. Red points are above 30% of GDP.",
+        barsTitle: "Highest and lowest revenue",
+        barsNote: "Top and bottom countries by revenue share at the matched GDP-per-capita year.",
+        axis: "Government revenue (% of GDP)",
+      },
+    };
+
+    let activeMetric = "spending";
+
+    const fmtMoney = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
+    const fmtPct = new Intl.NumberFormat("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    const tooltip = document.getElementById("tooltip");
+
+    const getData = () => datasets[activeMetric];
+    const getMeta = () => metricMeta[activeMetric];
+    const extent = (values) => [Math.min(...values), Math.max(...values)];
+    const median = (values) => {
+      const sorted = [...values].sort((a, b) => a - b);
+      const mid = Math.floor(sorted.length / 2);
+      return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+    };
+    const scale = (value, domain, range) => {
+      const t = (value - domain[0]) / (domain[1] - domain[0]);
+      return range[0] + t * (range[1] - range[0]);
+    };
+    const el = (name, attrs = {}, text = "") => {
+      const node = document.createElementNS("http://www.w3.org/2000/svg", name);
+      for (const [key, value] of Object.entries(attrs)) node.setAttribute(key, value);
+      if (text) node.textContent = text;
+      return node;
+    };
+
+    function syncText() {
+      const meta = getMeta();
+      document.getElementById("kpiMedianLabel").textContent = meta.medianLabel;
+      document.getElementById("kpiAverageLabel").textContent = meta.averageLabel;
+      document.getElementById("scatterNote").textContent = meta.scatterNote;
+      document.getElementById("legend").innerHTML = `<span>${meta.lowLegend}</span><span class="high">${meta.highLegend}</span>`;
+      document.getElementById("barsTitle").textContent = meta.barsTitle;
+      document.getElementById("barsNote").textContent = meta.barsNote;
+      document.getElementById("valueHeader").textContent = meta.column;
+      document.querySelector('option[value="metricDesc"]').textContent = `${meta.title}, highest first`;
+      document.querySelector('option[value="metricAsc"]').textContent = `${meta.title}, lowest first`;
+      document.querySelectorAll(".view-switcher button").forEach(button => {
+        button.classList.toggle("active", button.dataset.view === activeMetric);
+      });
+    }
+
+    function setKpis() {
+      const data = getData();
+      const values = data.map(d => d.value);
+      const years = extent(data.map(d => d.year));
+      document.getElementById("kpiCountries").textContent = data.length;
+      document.getElementById("kpiYears").textContent = `${years[0]}-${years[1]}`;
+      document.getElementById("kpiMedian").textContent = `${fmtPct.format(median(values))}%`;
+      document.getElementById("kpiAverage").textContent = `${fmtPct.format(values.reduce((a, b) => a + b, 0) / values.length)}%`;
+    }
+
+    function showTooltip(event, d) {
+      const meta = getMeta();
+      tooltip.innerHTML = `<strong>${d.country}</strong><br>${d.year}<br>GDP pc: $${fmtMoney.format(d.gdp)}<br>${meta.title}: ${fmtPct.format(d.value)}% of GDP`;
+      tooltip.style.left = `${event.clientX}px`;
+      tooltip.style.top = `${event.clientY}px`;
+      tooltip.style.opacity = "1";
+    }
+
+    function hideTooltip() {
+      tooltip.style.opacity = "0";
+    }
+
+    function drawScatter() {
+      const data = getData();
+      const meta = getMeta();
+      const svg = document.getElementById("scatter");
+      svg.innerHTML = "";
+      const width = 820, height = 430;
+      const margin = { top: 22, right: 24, bottom: 48, left: 58 };
+      const years = extent(data.map(d => d.year));
+      const yMax = Math.ceil(Math.max(...data.map(d => d.value)) / 10) * 10;
+      const xDomain = [Math.floor(years[0] / 10) * 10, Math.ceil(years[1] / 10) * 10];
+      const yDomain = [0, yMax];
+
+      for (let y = 0; y <= yMax; y += 10) {
+        const py = scale(y, yDomain, [height - margin.bottom, margin.top]);
+        svg.appendChild(el("line", { x1: margin.left, x2: width - margin.right, y1: py, y2: py, class: "grid-line" }));
+        svg.appendChild(el("text", { x: margin.left - 10, y: py + 4, "text-anchor": "end", class: "label-text" }, `${y}%`));
+      }
+
+      for (let year = xDomain[0]; year <= xDomain[1]; year += 20) {
+        const px = scale(year, xDomain, [margin.left, width - margin.right]);
+        svg.appendChild(el("line", { x1: px, x2: px, y1: margin.top, y2: height - margin.bottom, class: "grid-line" }));
+        svg.appendChild(el("text", { x: px, y: height - margin.bottom + 24, "text-anchor": "middle", class: "label-text" }, String(year)));
+      }
+
+      svg.appendChild(el("text", { x: width / 2, y: height - 8, "text-anchor": "middle", class: "label-text" }, "Matched year"));
+      svg.appendChild(el("text", { x: 14, y: height / 2, transform: `rotate(-90 14 ${height / 2})`, "text-anchor": "middle", class: "label-text" }, meta.axis));
+
+      data.forEach(d => {
+        const dot = el("circle", {
+          cx: scale(d.year, xDomain, [margin.left, width - margin.right]),
+          cy: scale(d.value, yDomain, [height - margin.bottom, margin.top]),
+          r: 5.5,
+          class: `dot ${d.value > meta.threshold ? "high" : ""}`,
+          tabindex: 0,
+          "aria-label": `${d.country}, ${d.year}, ${fmtPct.format(d.value)} percent ${meta.label}`,
+        });
+        dot.addEventListener("mousemove", (event) => showTooltip(event, d));
+        dot.addEventListener("mouseleave", hideTooltip);
+        dot.addEventListener("focus", (event) => showTooltip(event, d));
+        dot.addEventListener("blur", hideTooltip);
+        svg.appendChild(dot);
+      });
+    }
+
+    function drawBars() {
+      const data = getData();
+      const svg = document.getElementById("bars");
+      svg.innerHTML = "";
+      const top = [...data].sort((a, b) => b.value - a.value).slice(0, 8).map(d => ({ ...d, group: "high" }));
+      const low = [...data].sort((a, b) => a.value - b.value).slice(0, 8).map(d => ({ ...d, group: "low" }));
+      const rows = [...top, ...low];
+      const width = 460, rowH = 28, left = 150, topPad = 24;
+      const max = Math.max(...rows.map(d => d.value));
+
+      rows.forEach((d, i) => {
+        const y = topPad + i * rowH + (i >= top.length ? 22 : 0);
+        const barW = scale(d.value, [0, max], [0, width - left - 58]);
+        if (i === top.length) {
+          svg.appendChild(el("line", { x1: 0, x2: width, y1: y - 13, y2: y - 13, class: "grid-line" }));
+        }
+        svg.appendChild(el("text", { x: 0, y: y + 15, class: "label-text" }, d.country.length > 22 ? `${d.country.slice(0, 20)}...` : d.country));
+        svg.appendChild(el("rect", { x: left, y, width: barW, height: 18, rx: 3, class: `bar ${d.group}` }));
+        svg.appendChild(el("text", { x: left + barW + 7, y: y + 14, class: "label-text" }, `${fmtPct.format(d.value)}%`));
+      });
+    }
+
+    function renderTable() {
+      const data = getData();
+      const query = document.getElementById("search").value.trim().toLowerCase();
+      const sort = document.getElementById("sort").value;
+      const body = document.getElementById("tableBody");
+      const rows = data
+        .filter(d => d.country.toLowerCase().includes(query))
+        .sort((a, b) => {
+          if (sort === "yearAsc") return a.year - b.year || a.country.localeCompare(b.country);
+          if (sort === "yearDesc") return b.year - a.year || a.country.localeCompare(b.country);
+          if (sort === "metricDesc") return b.value - a.value;
+          if (sort === "metricAsc") return a.value - b.value;
+          return a.country.localeCompare(b.country);
+        });
+      body.innerHTML = rows.map(d => `
+        <tr>
+          <td>${d.country}</td>
+          <td class="num">$${fmtMoney.format(d.gdp)}</td>
+          <td class="num">${fmtPct.format(d.value)}%</td>
+          <td class="num">${d.year}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderAll() {
+      syncText();
+      setKpis();
+      drawScatter();
+      drawBars();
+      renderTable();
+    }
+
+    renderAll();
+    document.querySelectorAll(".view-switcher button").forEach(button => {
+      button.addEventListener("click", () => {
+        activeMetric = button.dataset.view;
+        renderAll();
+      });
+    });
+    document.getElementById("search").addEventListener("input", renderTable);
+    document.getElementById("sort").addEventListener("change", renderTable);
+  </script>
+</body>
+</html>

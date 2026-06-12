@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Momavali</title>
+  <style>
+    :root {
+      --bg: #f7f5ef;
+      --paper: #ffffff;
+      --ink: #17202a;
+      --muted: #5f6b76;
+      --line: #d8d2c6;
+      --accent: #245c7a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.45;
+    }
+
+    main {
+      width: min(900px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 48px 0;
+    }
+
+    header {
+      margin-bottom: 28px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(34px, 7vw, 64px);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    p {
+      max-width: 720px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .links {
+      display: grid;
+      gap: 14px;
+      margin-top: 26px;
+    }
+
+    a {
+      display: block;
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    a:hover,
+    a:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--accent);
+      font-size: 18px;
+    }
+
+    span {
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Momavali</h1>
+      <p>Historical GDP per capita, government spending, and revenue comparison dashboards.</p>
+    </header>
+
+    <section class="links" aria-label="Dashboards">
+      <a href="outputs/government_spending_real_ppp_10k_dashboard.html">
+        <strong>Government spending and revenue near real GDP per capita of $10k</strong>
+        <span>Main dashboard with spending and revenue views.</span>
+      </a>
+      <a href="outputs/real_gdp_9000_11000_gov_spending_interactive.html">
+        <strong>Government spending near real GDP per capita of $9k-$11k</strong>
+        <span>Interactive real GDP per capita comparison.</span>
+      </a>
+      <a href="outputs/gdp_9000_11000_gov_spending_interactive.html">
+        <strong>Government spending near nominal GDP per capita of $9k-$11k</strong>
+        <span>Interactive nominal GDP per capita comparison.</span>
+      </a>
+    </section>
+  </main>
+</body>
+</html>

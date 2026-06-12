@@ -1,0 +1,44 @@
+{
+  "chart": {
+    "title": "Government spending as share of GDP",
+    "subtitle": "Total government spending, shown as a share of gross domestic product (GDP). It includes interest paid on government debt.",
+    "note": "Data for general government (includes central, state, and local governments and social security funds) is used when available. When not, data refers to central government.",
+    "citation": "International Monetary Fund (2025)",
+    "originalChartUrl": "https://ourworldindata.org/grapher/historical-gov-spending-gdp?v=1&csvType=full&useColumnShortNames=false",
+    "selection": [
+      "Japan",
+      "United States",
+      "Germany",
+      "United Kingdom",
+      "China"
+    ]
+  },
+  "columns": {
+    "Government expenditure (% of GDP)": {
+      "titleShort": "Government expenditure (% of GDP)",
+      "titleLong": "Government expenditure (% of GDP)",
+      "descriptionShort": "The sum of all the money spent by the government on goods and services, as a percentage of GDP. It includes interest paid on government debt.",
+      "shortUnit": "%",
+      "unit": "% of GDP",
+      "timespan": "1800-2023",
+      "type": "Numeric",
+      "owidVariableId": 1025229,
+      "shortName": "expenditure",
+      "lastUpdated": "2025-04-02",
+      "nextUpdate": "2026-07-11",
+      "citationShort": "International Monetary Fund (2025) – with minor processing by Our World in Data",
+      "citationLong": "International Monetary Fund (2025) – with minor processing by Our World in Data. “Government expenditure (% of GDP)” [dataset]. International Monetary Fund, “Public Finances in Modern History” [original data].",
+      "fullMetadata": "https://api.ourworldindata.org/v1/indicators/1025229.metadata.json"
+    },
+    "1025229-annotations": {
+      "titleShort": "1025229-annotations",
+      "titleLong": "1025229-annotations",
+      "type": "SeriesAnnotation",
+      "citationShort": " – processed by Our World in Data",
+      "citationLong": " – processed by Our World in Data. “1025229-annotations” [dataset].",
+      "fullMetadata": "https://api.ourworldindata.org/v1/indicators/undefined.metadata.json"
+    }
+  },
+  "dateDownloaded": "2026-06-11",
+  "activeFilters": {}
+}

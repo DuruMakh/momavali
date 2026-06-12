@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Government spending near $10k GDP per capita</title>
+  <style>
+    :root {
+      --text: #171717;
+      --muted: #6d6d6d;
+      --grid: #dedede;
+      --point: #1f9ac8;
+      --point-dark: #0f5f79;
+      --panel: #f6f6f6;
+      --border: #d8d8d8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: #fff;
+    }
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 22px 20px 30px;
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: clamp(24px, 3vw, 34px);
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+    .subtitle {
+      margin: 0 0 18px;
+      color: #303030;
+      font-size: 17px;
+    }
+    .controls {
+      display: grid;
+      grid-template-columns: minmax(190px, 1fr) 140px 140px auto;
+      gap: 10px;
+      align-items: end;
+      padding: 12px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      margin-bottom: 14px;
+    }
+    label {
+      display: grid;
+      gap: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    input, button {
+      height: 36px;
+      border: 1px solid #bfbfbf;
+      border-radius: 4px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      padding: 0 10px;
+    }
+    button {
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      color: #333;
+      font-size: 14px;
+      margin: 0 0 6px;
+    }
+    .chart-wrap {
+      position: relative;
+      overflow-x: auto;
+      border-bottom: 1px solid #111;
+    }
+    svg {
+      display: block;
+      min-width: 920px;
+      width: 100%;
+      height: auto;
+    }
+    .grid { stroke: var(--grid); stroke-width: 1; }
+    .axis { stroke: #111; stroke-width: 1.5; }
+    .tick, .axis-label { fill: var(--muted); }
+    .axis-label { font-weight: 700; }
+    .point { fill: var(--point); opacity: .88; cursor: pointer; }
+    .point.dim { opacity: .18; }
+    .point.active { fill: #8fd2e8; stroke: #111; stroke-width: 2; opacity: 1; }
+    .trend { stroke: #111; stroke-width: 1.5; fill: none; }
+    .direct-label { font-size: 15px; fill: #1b1b1b; pointer-events: none; }
+    .tooltip {
+      position: absolute;
+      min-width: 210px;
+      pointer-events: none;
+      background: #fff;
+      border: 1px solid #aaa;
+      box-shadow: 0 8px 22px rgba(0,0,0,.14);
+      padding: 10px 11px;
+      font-size: 13px;
+      line-height: 1.45;
+      display: none;
+      z-index: 2;
+    }
+    .tooltip strong { display: block; font-size: 14px; margin-bottom: 2px; }
+    .note {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    @media (max-width: 760px) {
+      main { padding: 16px 12px 24px; }
+      .controls { grid-template-columns: 1fr 1fr; }
+      .controls label:first-child { grid-column: 1 / -1; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Government spending when GDP per capita was around $10k</h1>
+    <p class="subtitle">GDP per capita $9k-$11k, current USD; matched by country and year; Kuwait excluded.</p>
+
+    <section class="controls" aria-label="Chart controls">
+      <label>Search country or code
+        <input id="search" type="search" placeholder="e.g. Albania, BRA, Korea">
+      </label>
+      <label>From year
+        <input id="fromYear" type="number" min="1974" max="2023" value="1974">
+      </label>
+      <label>To year
+        <input id="toYear" type="number" min="1974" max="2023" value="2023">
+      </label>
+      <button id="reset" type="button">Reset</button>
+    </section>
+
+    <div class="stats" id="stats"></div>
+    <div class="chart-wrap" id="chartWrap">
+      <svg id="chart" viewBox="0 0 1120 660" role="img" aria-labelledby="chartTitle chartDesc">
+        <title id="chartTitle">Government spending near ten thousand dollars GDP per capita</title>
+        <desc id="chartDesc">Scatter plot of country-year observations with year on the x axis and government spending as a share of GDP on the y axis.</desc>
+      </svg>
+      <div class="tooltip" id="tooltip"></div>
+    </div>
+    <p class="note">Dots are country-year observations where GDP per capita was between $9,000 and $11,000. Hover or tap a dot for exact values.</p>
+  </main>
+  <script>
+    const data = [{"country": "Switzerland", "code": "CHE", "year": 1974, "gdp": 9004.788599, "spend": 27.4588}, {"country": "Sweden", "code": "SWE", "year": 1975, "gdp": 10102.638890937214, "spend": 30.565166}, {"country": "Switzerland", "code": "CHE", "year": 1975, "gdp": 10328.108938843328, "spend": 29.3119}, {"country": "Sweden", "code": "SWE", "year": 1976, "gdp": 10852.519244142792, "spend": 32.34024}, {"country": "Switzerland", "code": "CHE", "year": 1976, "gdp": 10864.97123110799, "spend": 31.5734}, {"country": "Denmark", "code": "DNK", "year": 1977, "gdp": 9769.578642839675, "spend": 45.6491}, {"country": "Iceland", "code": "ISL", "year": 1977, "gdp": 10305.31133495016, "spend": 31.707}, {"country": "Netherlands", "code": "NLD", "year": 1977, "gdp": 9180.299184617717, "spend": 50.5879}, {"country": "Norway", "code": "NOR", "year": 1977, "gdp": 10266.120671869805, "spend": 46.5343}, {"country": "United States", "code": "USA", "year": 1977, "gdp": 9452.57651914511, "spend": 33.388477}, {"country": "Belgium", "code": "BEL", "year": 1978, "gdp": 10289.76841732961, "spend": 52.758}, {"country": "Canada", "code": "CAN", "year": 1978, "gdp": 9154.433252777355, "spend": 41.6152}, {"country": "France", "code": "FRA", "year": 1978, "gdp": 9166.590119613908, "spend": 44.7102}, {"country": "Germany", "code": "DEU", "year": 1978, "gdp": 9516.782832289073, "spend": 47.7468}, {"country": "Japan", "code": "JPN", "year": 1978, "gdp": 9012.136035231819, "spend": 32.0974}, {"country": "United States", "code": "USA", "year": 1978, "gdp": 10564.94822202754, "spend": 32.60734}, {"country": "Australia", "code": "AUS", "year": 1979, "gdp": 9307.821279500107, "spend": 32.516582}, {"country": "Austria", "code": "AUT", "year": 1979, "gdp": 9755.404456257897, "spend": 49.756}, {"country": "Canada", "code": "CAN", "year": 1979, "gdp": 10077.502670726899, "spend": 40.0391}, {"country": "Finland", "code": "FIN", "year": 1979, "gdp": 9333.07695567452, "spend": 40.31}, {"country": "Japan", "code": "JPN", "year": 1979, "gdp": 9301.148310262934, "spend": 33.1794}, {"country": "Australia", "code": "AUS", "year": 1980, "gdp": 10223.288667510487, "spend": 33.210144}, {"country": "Austria", "code": "AUT", "year": 1980, "gdp": 10826.971827499463, "spend": 50.0084}, {"country": "Japan", "code": "JPN", "year": 1980, "gdp": 9668.746263957091, "spend": 33.4513}, {"country": "United Kingdom", "code": "GBR", "year": 1980, "gdp": 10032.062080014974, "spend": 47.6344}, {"country": "Austria", "code": "AUT", "year": 1981, "gdp": 9348.488323952324, "spend": 51.521}, {"country": "Belgium", "code": "BEL", "year": 1981, "gdp": 10622.802483078915, "spend": 61.5415}, {"country": "Finland", "code": "FIN", "year": 1981, "gdp": 10925.095716118118, "spend": 41.04}, {"country": "France", "code": "FRA", "year": 1981, "gdp": 10955.90029961675, "spend": 48.5316}, {"country": "Germany", "code": "DEU", "year": 1981, "gdp": 10246.476762318765, "spend": 49.0252}, {"country": "Japan", "code": "JPN", "year": 1981, "gdp": 10583.127890840195, "spend": 31.509295}, {"country": "United Kingdom", "code": "GBR", "year": 1981, "gdp": 9599.306222219648, "spend": 51.1957}, {"country": "Austria", "code": "AUT", "year": 1982, "gdp": 9373.48820626125, "spend": 52.0307}, {"country": "Belgium", "code": "BEL", "year": 1982, "gdp": 9343.861099596179, "spend": 59.6244}, {"country": "Finland", "code": "FIN", "year": 1982, "gdp": 10935.311058848634, "spend": 42.74}, {"country": "France", "code": "FRA", "year": 1982, "gdp": 10359.892066354889, "spend": 49.8704}, {"country": "Germany", "code": "DEU", "year": 1982, "gdp": 9950.059260253649, "spend": 49.1236}, {"country": "Japan", "code": "JPN", "year": 1982, "gdp": 9779.974906362666, "spend": 31.730806}, {"country": "United Kingdom", "code": "GBR", "year": 1982, "gdp": 9146.077357018517, "spend": 50.7501}, {"country": "Austria", "code": "AUT", "year": 1983, "gdp": 9500.050704174944, "spend": 52.4378}, {"country": "Finland", "code": "FIN", "year": 1983, "gdp": 10493.962663680604, "spend": 44.39}, {"country": "France", "code": "FRA", "year": 1983, "gdp": 9862.284493865862, "spend": 50.2373}, {"country": "Germany", "code": "DEU", "year": 1983, "gdp": 9900.485592335259, "spend": 47.9191}, {"country": "Japan", "code": "JPN", "year": 1983, "gdp": 10652.014716176764, "spend": 31.839483}, {"country": "Netherlands", "code": "NLD", "year": 1983, "gdp": 10696.077495868194, "spend": 59.1089}, {"country": "Finland", "code": "FIN", "year": 1984, "gdp": 10830.218522266328, "spend": 44.38}, {"country": "France", "code": "FRA", "year": 1984, "gdp": 9311.894264521288, "spend": 51.2211}, {"country": "Germany", "code": "DEU", "year": 1984, "gdp": 9347.290684123767, "spend": 47.1596}, {"country": "Netherlands", "code": "NLD", "year": 1984, "gdp": 9991.843776556509, "spend": 58.1413}, {"country": "Austria", "code": "AUT", "year": 1985, "gdp": 9136.170925596945, "spend": 53.5177}, {"country": "France", "code": "FRA", "year": 1985, "gdp": 9657.01938533723, "spend": 51.884}, {"country": "Germany", "code": "DEU", "year": 1985, "gdp": 9464.116947108565, "spend": 46.5613}, {"country": "Netherlands", "code": "NLD", "year": 1985, "gdp": 9940.73843593795, "spend": 57.2607}, {"country": "New Zealand", "code": "NZL", "year": 1986, "gdp": 9427.553940353479, "spend": 46.88326}, {"country": "United Kingdom", "code": "GBR", "year": 1986, "gdp": 10611.112210095978, "spend": 44.6397}, {"country": "Hong Kong SAR, China", "code": "HKG", "year": 1987, "gdp": 9071.390764734446, "spend": 11.767137}, {"country": "Ireland", "code": "IRL", "year": 1987, "gdp": 9581.913085724145, "spend": 51.4041}, {"country": "Israel", "code": "ISR", "year": 1987, "gdp": 9853.40893452981, "spend": 52.77}, {"country": "Hong Kong SAR, China", "code": "HKG", "year": 1988, "gdp": 10609.745639454548, "spend": 11.681082}, {"country": "Ireland", "code": "IRL", "year": 1988, "gdp": 10715.87027805391, "spend": 48.2475}, {"country": "Spain", "code": "ESP", "year": 1988, "gdp": 9696.192853853798, "spend": 28.6402}, {"country": "Spain", "code": "ESP", "year": 1989, "gdp": 10674.341023010704, "spend": 32.0925}, {"country": "Bahrain", "code": "BHR", "year": 1990, "gdp": 9342.538914016883, "spend": 32.36251}, {"country": "Greece", "code": "GRC", "year": 1990, "gdp": 9466.662385021744, "spend": 37.96846}, {"country": "Bahrain", "code": "BHR", "year": 1991, "gdp": 10434.132396278646, "spend": 28.535748}, {"country": "Greece", "code": "GRC", "year": 1991, "gdp": 10046.666387547462, "spend": 34.706005}, {"country": "Bahamas, The", "code": "BHS", "year": 1992, "gdp": 10873.404750163503, "spend": 11.796144}, {"country": "Bahrain", "code": "BHR", "year": 1992, "gdp": 10460.158322280826, "spend": 29.398846}, {"country": "Portugal", "code": "PRT", "year": 1992, "gdp": 10810.566507962558, "spend": 42.477}, {"country": "Bahamas, The", "code": "BHS", "year": 1993, "gdp": 10613.065878581308, "spend": 11.511544}, {"country": "Greece", "code": "GRC", "year": 1993, "gdp": 10257.308578907285, "spend": 38.089878}, {"country": "Korea, Rep.", "code": "KOR", "year": 1993, "gdp": 9179.968724851517, "spend": 15.0622}, {"country": "Portugal", "code": "PRT", "year": 1993, "gdp": 9534.656363730797, "spend": 44.1459}, {"country": "Saudi Arabia", "code": "SAU", "year": 1993, "gdp": 10884.860788077705, "spend": 37.731644}, {"country": "Antigua and Barbuda", "code": "ATG", "year": 1994, "gdp": 9351.487537685045, "spend": 21.153938}, {"country": "Bahamas, The", "code": "BHS", "year": 1994, "gdp": 10991.234667413131, "spend": 11.7489605}, {"country": "Greece", "code": "GRC", "year": 1994, "gdp": 10937.022380861115, "spend": 36.41131}, {"country": "Korea, Rep.", "code": "KOR", "year": 1994, "gdp": 10733.988886065747, "spend": 15.4012}, {"country": "Portugal", "code": "PRT", "year": 1994, "gdp": 9977.319909057709, "spend": 42.4532}, {"country": "Saudi Arabia", "code": "SAU", "year": 1994, "gdp": 10601.919669780538, "spend": 33.794125}, {"country": "Antigua and Barbuda", "code": "ATG", "year": 1995, "gdp": 9034.475529071431, "spend": 20.986893}, {"country": "Saudi Arabia", "code": "SAU", "year": 1995, "gdp": 10786.4008952769, "spend": 32.41316}, {"country": "Slovenia", "code": "SVN", "year": 1995, "gdp": 10738.088761146779, "spend": 53.016163}, {"country": "Antigua and Barbuda", "code": "ATG", "year": 1996, "gdp": 9756.08717951992, "spend": 19.571445}, {"country": "Barbados", "code": "BRB", "year": 1996, "gdp": 9011.778848387215, "spend": 20.147236}, {"country": "Slovenia", "code": "SVN", "year": 1996, "gdp": 10796.739944628272, "spend": 45.181477}, {"country": "Antigua and Barbuda", "code": "ATG", "year": 1997, "gdp": 10336.25916178377, "spend": 16.757488}, {"country": "Barbados", "code": "BRB", "year": 1997, "gdp": 9521.571273771226, "spend": 20.695354}, {"country": "Slovenia", "code": "SVN", "year": 1997, "gdp": 10436.726066187064, "spend": 45.407658}, {"country": "Antigua and Barbuda", "code": "ATG", "year": 1998, "gdp": 10906.878540696138, "spend": 20.66067}, {"country": "Barbados", "code": "BRB", "year": 1998, "gdp": 10734.36372428835, "spend": 18.765493}, {"country": "Saudi Arabia", "code": "SAU", "year": 1998, "gdp": 9836.057297685738, "spend": 34.530685}, {"country": "Saudi Arabia", "code": "SAU", "year": 1999, "gdp": 10452.189940047903, "spend": 30.314838}, {"country": "St. Kitts and Nevis", "code": "KNA", "year": 1999, "gdp": 9116.28627997718, "spend": 33.5898}, {"country": "Oman", "code": "OMN", "year": 2000, "gdp": 9753.847551854038, "spend": 31.221806}, {"country": "Slovenia", "code": "SVN", "year": 2000, "gdp": 10135.721910921158, "spend": 47.81042}, {"country": "St. Kitts and Nevis", "code": "KNA", "year": 2000, "gdp": 9319.655450935246, "spend": 34.63032}, {"country": "Oman", "code": "OMN", "year": 2001, "gdp": 9611.963601910536, "spend": 33.2787}, {"country": "Saudi Arabia", "code": "SAU", "year": 2001, "gdp": 10805.311325121995, "spend": 36.939186}, {"country": "Slovenia", "code": "SVN", "year": 2001, "gdp": 10375.625586986062, "spend": 49.160362}, {"country": "St. Kitts and Nevis", "code": "KNA", "year": 2001, "gdp": 10022.591923563721, "spend": 30.85524}, {"country": "Oman", "code": "OMN", "year": 2002, "gdp": 9869.130502194377, "spend": 34.137516}, {"country": "Saudi Arabia", "code": "SAU", "year": 2002, "gdp": 10586.05434713628, "spend": 35.86387}, {"country": "St. Kitts and Nevis", "code": "KNA", "year": 2002, "gdp": 10453.658706431253, "spend": 35.414196}, {"country": "Czechia", "code": "CZE", "year": 2003, "gdp": 9852.456779458013, "spend": 48.950356}, {"country": "Oman", "code": "OMN", "year": 2003, "gdp": 10463.54258321412, "spend": 33.956802}, {"country": "Seychelles", "code": "SYC", "year": 2003, "gdp": 9070.284607570127, "spend": 44.6277}, {"country": "St. Kitts and Nevis", "code": "KNA", "year": 2003, "gdp": 10175.629544998916, "spend": 30.858278}, {"country": "Croatia", "code": "HRV", "year": 2004, "gdp": 9718.973228019671, "spend": 48.52413}, {"country": "Hungary", "code": "HUN", "year": 2004, "gdp": 10291.269472140895, "spend": 48.72172}, {"country": "Seychelles", "code": "SYC", "year": 2004, "gdp": 10827.671636032957, "spend": 39.8955}, {"country": "Slovak Republic", "code": "SVK", "year": 2004, "gdp": 10650.129009712562, "spend": 37.91984}, {"country": "St. Kitts and Nevis", "code": "KNA", "year": 2004, "gdp": 10944.618374176831, "spend": 33.676968}, {"country": "Trinidad and Tobago", "code": "TTO", "year": 2004, "gdp": 9871.034198200861, "spend": 23.343203}, {"country": "Croatia", "code": "HRV", "year": 2005, "gdp": 10443.527835329447, "spend": 46.007572}, {"country": "Estonia", "code": "EST", "year": 2005, "gdp": 10414.638118356492, "spend": 33.71131}, {"country": "Chile", "code": "CHL", "year": 2006, "gdp": 9318.656552961205, "spend": 18.730162}, {"country": "Equatorial Guinea", "code": "GNQ", "year": 2006, "gdp": 10184.884124854147, "spend": 18.09294}, {"country": "Latvia", "code": "LVA", "year": 2006, "gdp": 9211.7374468148, "spend": 33.675213}, {"country": "Mexico", "code": "MEX", "year": 2006, "gdp": 9512.635753466991, "spend": 21.576569}, {"country": "Poland", "code": "POL", "year": 2006, "gdp": 9068.855283076271, "spend": 44.451424}, {"country": "Chile", "code": "CHL", "year": 2007, "gdp": 10346.413818453251, "spend": 19.306606}, {"country": "Mexico", "code": "MEX", "year": 2007, "gdp": 10134.332713811855, "spend": 22.521006}, {"country": "Russian Federation", "code": "RUS", "year": 2007, "gdp": 9101.2392578125, "spend": 31.941519}, {"country": "Turkiye", "code": "TUR", "year": 2007, "gdp": 9766.91734545294, "spend": 32.89378}, {"country": "Chile", "code": "CHL", "year": 2008, "gdp": 10683.218877251113, "spend": 21.79111}, {"country": "Gabon", "code": "GAB", "year": 2008, "gdp": 9688.645196906331, "spend": 18.9291}, {"country": "Mexico", "code": "MEX", "year": 2008, "gdp": 10523.768540324385, "spend": 26.501976}, {"country": "Romania", "code": "ROU", "year": 2008, "gdp": 10435.156123078721, "spend": 35.271397}, {"country": "Turkiye", "code": "TUR", "year": 2008, "gdp": 10913.407904776937, "spend": 33.69474}, {"country": "Uruguay", "code": "URY", "year": 2008, "gdp": 9423.965625958926, "spend": 26.29236}, {"country": "Chile", "code": "CHL", "year": 2009, "gdp": 10098.801716728622, "spend": 24.975693}, {"country": "Seychelles", "code": "SYC", "year": 2009, "gdp": 9747.09180546291, "spend": 32.117413}, {"country": "Turkiye", "code": "TUR", "year": 2009, "gdp": 9076.924722369766, "spend": 37.22808}, {"country": "Uruguay", "code": "URY", "year": 2009, "gdp": 9881.395731270806, "spend": 27.193434}, {"country": "Argentina", "code": "ARG", "year": 2010, "gdp": 10260.13131082542, "spend": 33.35807}, {"country": "Mexico", "code": "MEX", "year": 2010, "gdp": 9728.800783770816, "spend": 26.482124}, {"country": "Russian Federation", "code": "RUS", "year": 2010, "gdp": 10674.990234375, "spend": 35.50483}, {"country": "Seychelles", "code": "SYC", "year": 2010, "gdp": 10934.79494629001, "spend": 34.575912}, {"country": "Turkiye", "code": "TUR", "year": 2010, "gdp": 10698.969940975661, "spend": 35.4779}, {"country": "Costa Rica", "code": "CRI", "year": 2011, "gdp": 9276.391075113472, "spend": 17.17984}, {"country": "Gabon", "code": "GAB", "year": 2011, "gdp": 10219.11393394536, "spend": 22.073605}, {"country": "Malaysia", "code": "MYS", "year": 2011, "gdp": 10217.106858503092, "spend": 27.087816}, {"country": "Mexico", "code": "MEX", "year": 2011, "gdp": 10664.49440323125, "spend": 26.622072}, {"country": "Panama", "code": "PAN", "year": 2011, "gdp": 9662.295909119792, "spend": 24.622143}, {"country": "Romania", "code": "ROU", "year": 2011, "gdp": 9560.675527745803, "spend": 34.980064}, {"country": "St. Lucia", "code": "LCA", "year": 2011, "gdp": 9128.994420116125, "spend": 26.854406}, {"country": "Venezuela, RB", "code": "VEN", "year": 2011, "gdp": 10843.922970316738, "spend": 39.36064}, {"country": "Costa Rica", "code": "CRI", "year": 2012, "gdp": 10126.999102417712, "spend": 17.34318}, {"country": "Gabon", "code": "GAB", "year": 2012, "gdp": 9296.965879410882, "spend": 23.949581}, {"country": "Malaysia", "code": "MYS", "year": 2012, "gdp": 10600.574424002583, "spend": 28.50543}, {"country": "Mexico", "code": "MEX", "year": 2012, "gdp": 10744.133524268636, "spend": 26.999657}, {"country": "St. Lucia", "code": "LCA", "year": 2012, "gdp": 9260.300065517144, "spend": 27.727514}, {"country": "Costa Rica", "code": "CRI", "year": 2013, "gdp": 10803.240196217295, "spend": 18.519442}, {"country": "Gabon", "code": "GAB", "year": 2013, "gdp": 9197.701063239467, "spend": 34.67457}, {"country": "Malaysia", "code": "MYS", "year": 2013, "gdp": 10713.640763889869, "spend": 27.780104}, {"country": "Romania", "code": "ROU", "year": 2013, "gdp": 9497.674116152373, "spend": 34.168655}, {"country": "St. Lucia", "code": "LCA", "year": 2013, "gdp": 9577.217337543578, "spend": 25.083422}, {"country": "Suriname", "code": "SUR", "year": 2013, "gdp": 9043.192815292216, "spend": 26.870714}, {"country": "Costa Rica", "code": "CRI", "year": 2014, "gdp": 10911.497878334028, "spend": 18.400082}, {"country": "Gabon", "code": "GAB", "year": 2014, "gdp": 9201.362766481054, "spend": 23.755484}, {"country": "Romania", "code": "ROU", "year": 2014, "gdp": 10031.771075540391, "spend": 33.754543}, {"country": "St. Lucia", "code": "LCA", "year": 2014, "gdp": 10044.82183776766, "spend": 23.387672}, {"country": "Suriname", "code": "SUR", "year": 2014, "gdp": 9108.189054067641, "spend": 27.198637}, {"country": "Equatorial Guinea", "code": "GNQ", "year": 2015, "gdp": 9068.910032386446, "spend": 41.57078}, {"country": "Malaysia", "code": "MYS", "year": 2015, "gdp": 9648.679793752302, "spend": 24.708185}, {"country": "Maldives", "code": "MDV", "year": 2015, "gdp": 9644.906550281454, "spend": 33.78895}, {"country": "Mexico", "code": "MEX", "year": 2015, "gdp": 10021.238611882723, "spend": 26.557375}, {"country": "Russian Federation", "code": "RUS", "year": 2015, "gdp": 9277.7138671875, "spend": 35.273453}, {"country": "St. Lucia", "code": "LCA", "year": 2015, "gdp": 10334.986082391815, "spend": 23.504478}, {"country": "Grenada", "code": "GRD", "year": 2016, "gdp": 9221.234610794238, "spend": 23.526796}, {"country": "Malaysia", "code": "MYS", "year": 2016, "gdp": 9476.534098099228, "spend": 22.857676}, {"country": "Maldives", "code": "MDV", "year": 2016, "gdp": 9947.807447317393, "spend": 37.339664}, {"country": "Mexico", "code": "MEX", "year": 2016, "gdp": 9097.923976747688, "spend": 26.52252}, {"country": "Romania", "code": "ROU", "year": 2016, "gdp": 9404.540058707149, "spend": 31.812971}, {"country": "St. Lucia", "code": "LCA", "year": 2016, "gdp": 10638.12693966526, "spend": 22.627817}, {"country": "Turkiye", "code": "TUR", "year": 2016, "gdp": 10984.36431690613, "spend": 33.800213}, {"country": "Brazil", "code": "BRA", "year": 2017, "gdp": 10080.507872282147, "spend": 44.297333}, {"country": "Grenada", "code": "GRD", "year": 2017, "gdp": 9751.426611559324, "spend": 22.589148}, {"country": "Malaysia", "code": "MYS", "year": 2017, "gdp": 9862.548066122346, "spend": 22.04306}, {"country": "Maldives", "code": "MDV", "year": 2017, "gdp": 10509.628805811957, "spend": 30.356897}, {"country": "Mexico", "code": "MEX", "year": 2017, "gdp": 9649.278167724024, "spend": 25.01818}, {"country": "Romania", "code": "ROU", "year": 2017, "gdp": 10727.982200742588, "spend": 31.018637}, {"country": "Russian Federation", "code": "RUS", "year": 2017, "gdp": 10658.9130859375, "spend": 34.83017}, {"country": "Turkiye", "code": "TUR", "year": 2017, "gdp": 10756.387767788297, "spend": 32.61051}, {"country": "Brazil", "code": "BRA", "year": 2018, "gdp": 9300.660729040037, "spend": 44.18066}, {"country": "Bulgaria", "code": "BGR", "year": 2018, "gdp": 9849.383972251744, "spend": 34.326534}, {"country": "China", "code": "CHN", "year": 2018, "gdp": 10085.663814881918, "spend": 33.276943}, {"country": "Dominica", "code": "DMA", "year": 2018, "gdp": 9215.308540564503, "spend": 63.43155}, {"country": "Grenada", "code": "GRD", "year": 2018, "gdp": 10083.02127922496, "spend": 22.369394}, {"country": "Lebanon", "code": "LBN", "year": 2018, "gdp": 9174.536662047589, "spend": 32.32634}, {"country": "Malaysia", "code": "MYS", "year": 2018, "gdp": 10901.80199544212, "spend": 22.799944}, {"country": "Mexico", "code": "MEX", "year": 2018, "gdp": 10084.793756202112, "spend": 24.969736}, {"country": "Turkiye", "code": "TUR", "year": 2018, "gdp": 9684.118198847205, "spend": 34.293766}, {"country": "Argentina", "code": "ARG", "year": 2019, "gdp": 9955.974786804276, "spend": 38.12906}, {"country": "Brazil", "code": "BRA", "year": 2019, "gdp": 9029.83304401079, "spend": 43.042877}, {"country": "Bulgaria", "code": "BGR", "year": 2019, "gdp": 10353.72045841272, "spend": 35.868797}, {"country": "China", "code": "CHN", "year": 2019, "gdp": 10342.90095243346, "spend": 34.15261}, {"country": "Dominica", "code": "DMA", "year": 2019, "gdp": 9491.149959623737, "spend": 48.28094}, {"country": "Grenada", "code": "GRD", "year": 2019, "gdp": 10462.792915953347, "spend": 21.642614}, {"country": "Malaysia", "code": "MYS", "year": 2019, "gdp": 10920.191763972032, "spend": 23.575}, {"country": "Mexico", "code": "MEX", "year": 2019, "gdp": 10369.555358527137, "spend": 25.241837}, {"country": "Turkiye", "code": "TUR", "year": 2019, "gdp": 9395.233780013677, "spend": 35.514717}, {"country": "Bulgaria", "code": "BGR", "year": 2020, "gdp": 10760.211975413009, "spend": 37.81082}, {"country": "China", "code": "CHN", "year": 2020, "gdp": 10627.463798961868, "spend": 35.402733}, {"country": "Malaysia", "code": "MYS", "year": 2020, "gdp": 9957.526266976134, "spend": 25.040268}, {"country": "Russian Federation", "code": "RUS", "year": 2020, "gdp": 10108.3271484375, "spend": 39.152565}, {"country": "Argentina", "code": "ARG", "year": 2021, "gdp": 10738.017922338438, "spend": 37.883366}, {"country": "Grenada", "code": "GRD", "year": 2021, "gdp": 9617.289029053734, "spend": 31.244282}, {"country": "Guyana", "code": "GUY", "year": 2021, "gdp": 9860.870148343864, "spend": 26.009218}, {"country": "Malaysia", "code": "MYS", "year": 2021, "gdp": 10903.103748077187, "spend": 24.45074}, {"country": "Maldives", "code": "MDV", "year": 2021, "gdp": 10176.143882547023, "spend": 40.614864}, {"country": "Mexico", "code": "MEX", "year": 2021, "gdp": 10314.050672211482, "spend": 26.754974}, {"country": "St. Lucia", "code": "LCA", "year": 2021, "gdp": 10459.132124809183, "spend": 25.831581}, {"country": "Turkiye", "code": "TUR", "year": 2021, "gdp": 9981.763984113362, "spend": 31.283236}, {"country": "Brazil", "code": "BRA", "year": 2022, "gdp": 9281.332821368642, "spend": 43.44533}, {"country": "Dominica", "code": "DMA", "year": 2022, "gdp": 9323.660894905619, "spend": 69.98738}, {"country": "Dominican Republic", "code": "DOM", "year": 2022, "gdp": 10104.244934908073, "spend": 18.512686}, {"country": "Grenada", "code": "GRD", "year": 2022, "gdp": 10469.386701285634, "spend": 31.808434}, {"country": "St. Vincent and the Grenadines", "code": "VCT", "year": 2022, "gdp": 9693.558678330251, "spend": 35.89036}, {"country": "Turkiye", "code": "TUR", "year": 2022, "gdp": 10897.83978613649, "spend": 27.33214}, {"country": "Albania", "code": "ALB", "year": 2023, "gdp": 9730.869219068934, "spend": 29.174093}, {"country": "Brazil", "code": "BRA", "year": 2023, "gdp": 10377.58977191948, "spend": 45.449196}, {"country": "Dominica", "code": "DMA", "year": 2023, "gdp": 9912.962127666682, "spend": 61.66059}, {"country": "Dominican Republic", "code": "DOM", "year": 2023, "gdp": 10630.431743829022, "spend": 18.970379}, {"country": "St. Vincent and the Grenadines", "code": "VCT", "year": 2023, "gdp": 10582.365672522892, "spend": 38.010178}];
+    const svg = document.getElementById("chart");
+    const tooltip = document.getElementById("tooltip");
+    const chartWrap = document.getElementById("chartWrap");
+    const search = document.getElementById("search");
+    const fromYear = document.getElementById("fromYear");
+    const toYear = document.getElementById("toYear");
+    const stats = document.getElementById("stats");
+    const reset = document.getElementById("reset");
+
+    const width = 1120;
+    const height = 660;
+    const margin = { left: 76, right: 176, top: 34, bottom: 70 };
+    const plotW = width - margin.left - margin.right;
+    const plotH = height - margin.top - margin.bottom;
+    const minYear = 1974;
+    const maxYear = 2023;
+    const maxSpend = 75;
+    const labelCodes = new Set(["DMA", "BRA", "VCT", "ALB", "DOM", "BHS", "HKG", "BEL"]);
+
+    const fmtPct = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 });
+    const fmtUsd = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
+
+    function xScale(year) {
+      return margin.left + ((year - minYear) / (maxYear - minYear)) * plotW;
+    }
+    function yScale(value) {
+      return margin.top + (1 - value / maxSpend) * plotH;
+    }
+    function el(name, attrs = {}) {
+      const node = document.createElementNS("http://www.w3.org/2000/svg", name);
+      for (const [key, value] of Object.entries(attrs)) node.setAttribute(key, value);
+      return node;
+    }
+    function regression(rows) {
+      if (rows.length < 2) return null;
+      const n = rows.length;
+      const sx = rows.reduce((sum, d) => sum + d.year, 0);
+      const sy = rows.reduce((sum, d) => sum + d.spend, 0);
+      const sxx = rows.reduce((sum, d) => sum + d.year * d.year, 0);
+      const sxy = rows.reduce((sum, d) => sum + d.year * d.spend, 0);
+      const denom = n * sxx - sx * sx;
+      if (!denom) return null;
+      const slope = (n * sxy - sx * sy) / denom;
+      const intercept = (sy - slope * sx) / n;
+      return { slope, intercept };
+    }
+    function median(values) {
+      const sorted = [...values].sort((a, b) => a - b);
+      const mid = Math.floor(sorted.length / 2);
+      return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+    }
+    function filteredRows() {
+      const query = search.value.trim().toLowerCase();
+      const start = Number(fromYear.value);
+      const end = Number(toYear.value);
+      return data.filter((d) => {
+        const matchText = !query || d.country.toLowerCase().includes(query) || d.code.toLowerCase().includes(query);
+        return matchText && d.year >= start && d.year <= end;
+      });
+    }
+    function setTooltip(event, d) {
+      tooltip.innerHTML = `<strong>${d.country} (${d.code}), ${d.year}</strong>
+        GDP per capita: $${fmtUsd.format(d.gdp)}<br>
+        Gov spending: ${fmtPct.format(d.spend)}% of GDP`;
+      const bounds = chartWrap.getBoundingClientRect();
+      tooltip.style.display = "block";
+      tooltip.style.left = `${event.clientX - bounds.left + chartWrap.scrollLeft + 14}px`;
+      tooltip.style.top = `${event.clientY - bounds.top + 14}px`;
+    }
+    function hideTooltip() {
+      tooltip.style.display = "none";
+    }
+    function render() {
+      const visible = filteredRows();
+      svg.replaceChildren();
+
+      for (const gy of [0, 15, 30, 45, 60, 75]) {
+        const y = yScale(gy);
+        svg.append(el("line", { class: "grid", x1: margin.left, y1: y, x2: width - margin.right, y2: y }));
+        svg.append(el("text", { class: "tick", x: margin.left - 12, y: y + 5, "text-anchor": "end" })).textContent = gy;
+      }
+      for (const gx of [1975, 1985, 1995, 2005, 2015, 2023]) {
+        const x = xScale(gx);
+        svg.append(el("line", { class: "grid", x1: x, y1: margin.top, x2: x, y2: height - margin.bottom }));
+        svg.append(el("text", { class: "tick", x, y: height - margin.bottom + 32, "text-anchor": "middle" })).textContent = gx;
+      }
+      svg.append(el("line", { class: "axis", x1: margin.left, y1: height - margin.bottom, x2: width - margin.right, y2: height - margin.bottom }));
+      svg.append(el("line", { class: "axis", x1: margin.left, y1: margin.top, x2: margin.left, y2: height - margin.bottom }));
+      svg.append(el("text", { class: "axis-label", x: margin.left + 8, y: margin.top + 18 })).textContent = "Government spending (% of GDP)";
+      svg.append(el("text", { class: "axis-label", x: width - margin.right, y: height - margin.bottom - 12, "text-anchor": "end" })).textContent = "Year country was near $10k GDP per capita";
+
+      const fit = regression(visible);
+      if (fit) {
+        svg.append(el("line", {
+          class: "trend",
+          x1: xScale(minYear),
+          y1: yScale(fit.slope * minYear + fit.intercept),
+          x2: xScale(maxYear),
+          y2: yScale(fit.slope * maxYear + fit.intercept)
+        }));
+      }
+
+      for (const d of visible) {
+        const point = el("circle", {
+          class: "point",
+          cx: xScale(d.year),
+          cy: yScale(d.spend),
+          r: 4.5,
+          tabindex: 0
+        });
+        point.addEventListener("pointermove", (event) => setTooltip(event, d));
+        point.addEventListener("pointerleave", hideTooltip);
+        point.addEventListener("focus", (event) => setTooltip(event, d));
+        point.addEventListener("blur", hideTooltip);
+        svg.append(point);
+      }
+
+      const latest = new Map();
+      for (const d of visible) {
+        if (labelCodes.has(d.code) && (!latest.has(d.code) || d.year > latest.get(d.code).year)) latest.set(d.code, d);
+      }
+      for (const d of latest.values()) {
+        const x = xScale(d.year);
+        const y = yScale(d.spend);
+        const label = d.code === "DOM" ? "Dominican Rep." : d.code === "VCT" ? "St. Vincent" : d.country;
+        svg.append(el("circle", { class: "point active", cx: x, cy: y, r: 5 }));
+        svg.append(el("text", {
+          class: "direct-label",
+          x: d.year >= 2020 ? x + 10 : x + 9,
+          y: d.spend < 15 ? y + 20 : y - 8
+        })).textContent = label;
+      }
+
+      const values = visible.map((d) => d.spend);
+      const mean = values.reduce((sum, value) => sum + value, 0) / Math.max(values.length, 1);
+      stats.innerHTML = `
+        <span><strong>${visible.length}</strong> observations</span>
+        <span><strong>${new Set(visible.map((d) => d.code)).size}</strong> countries</span>
+        <span><strong>${fmtPct.format(mean || 0)}%</strong> mean spending</span>
+        <span><strong>${values.length ? fmtPct.format(median(values)) : "0"}%</strong> median spending</span>
+      `;
+    }
+
+    search.addEventListener("input", render);
+    fromYear.addEventListener("input", render);
+    toYear.addEventListener("input", render);
+    reset.addEventListener("click", () => {
+      search.value = "";
+      fromYear.value = minYear;
+      toYear.value = maxYear;
+      render();
+    });
+    render();
+  </script>
+</body>
+</html>

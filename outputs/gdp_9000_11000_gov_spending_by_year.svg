@@ -1,0 +1,290 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="680" viewBox="0 0 1120 680">
+<style>
+text{font-family:Arial, Helvetica, sans-serif;fill:#1b1b1b}
+.title{font-size:30px;font-weight:700}
+.subtitle{font-size:18px;fill:#333}
+.axis-label{font-size:15px;font-weight:700;fill:#6e6e6e}
+.tick{font-size:15px;fill:#6e6e6e}
+.grid{stroke:#dfdfdf;stroke-width:1}
+.axis{stroke:#111;stroke-width:1.5}
+.dot{fill:#1f9ac8;opacity:.9}
+.focus{fill:#8fd2e8;stroke:#111;stroke-width:2}
+.trend{stroke:#111;stroke-width:1.4;fill:none}
+.label{font-size:16px}
+</style>
+<rect width="100%" height="100%" fill="white"/>
+<text class="title" x="28" y="42">Government spending when GDP per capita was around $10k</text>
+<text class="subtitle" x="28" y="73">GDP per capita $9k-$11k, current USD; Kuwait excluded; spending as % of GDP</text>
+<line class="grid" x1="92" y1="598.00" x2="940" y2="598.00"/>
+<text class="tick" x="78" y="603.00" text-anchor="end">0</text>
+<line class="grid" x1="92" y1="496.80" x2="940" y2="496.80"/>
+<text class="tick" x="78" y="501.80" text-anchor="end">15</text>
+<line class="grid" x1="92" y1="395.60" x2="940" y2="395.60"/>
+<text class="tick" x="78" y="400.60" text-anchor="end">30</text>
+<line class="grid" x1="92" y1="294.40" x2="940" y2="294.40"/>
+<text class="tick" x="78" y="299.40" text-anchor="end">45</text>
+<line class="grid" x1="92" y1="193.20" x2="940" y2="193.20"/>
+<text class="tick" x="78" y="198.20" text-anchor="end">60</text>
+<line class="grid" x1="92" y1="92.00" x2="940" y2="92.00"/>
+<text class="tick" x="78" y="97.00" text-anchor="end">75</text>
+<line class="grid" x1="109.31" y1="92" x2="109.31" y2="598"/>
+<text class="tick" x="109.31" y="629" text-anchor="middle">1975</text>
+<line class="grid" x1="282.37" y1="92" x2="282.37" y2="598"/>
+<text class="tick" x="282.37" y="629" text-anchor="middle">1985</text>
+<line class="grid" x1="455.43" y1="92" x2="455.43" y2="598"/>
+<text class="tick" x="455.43" y="629" text-anchor="middle">1995</text>
+<line class="grid" x1="628.49" y1="92" x2="628.49" y2="598"/>
+<text class="tick" x="628.49" y="629" text-anchor="middle">2005</text>
+<line class="grid" x1="801.55" y1="92" x2="801.55" y2="598"/>
+<text class="tick" x="801.55" y="629" text-anchor="middle">2015</text>
+<line class="grid" x1="940.00" y1="92" x2="940.00" y2="598"/>
+<text class="tick" x="940.00" y="629" text-anchor="middle">2023</text>
+<line class="axis" x1="92" y1="598" x2="940" y2="598"/>
+<line class="axis" x1="92" y1="92" x2="92" y2="598"/>
+<text class="axis-label" x="100" y="110">Government spending (% of GDP)</text>
+<text class="axis-label" x="940" y="586" text-anchor="end">Year country was near $10k GDP per capita</text>
+<circle class="dot" cx="92.00" cy="412.74" r="4.2"/>
+<circle class="dot" cx="109.31" cy="391.79" r="4.2"/>
+<circle class="dot" cx="109.31" cy="400.24" r="4.2"/>
+<circle class="dot" cx="126.61" cy="379.81" r="4.2"/>
+<circle class="dot" cx="126.61" cy="384.98" r="4.2"/>
+<circle class="dot" cx="143.92" cy="290.02" r="4.2"/>
+<circle class="dot" cx="143.92" cy="384.08" r="4.2"/>
+<circle class="dot" cx="143.92" cy="256.70" r="4.2"/>
+<circle class="dot" cx="143.92" cy="284.05" r="4.2"/>
+<circle class="dot" cx="143.92" cy="372.74" r="4.2"/>
+<circle class="dot" cx="161.22" cy="242.06" r="4.2"/>
+<circle class="dot" cx="161.22" cy="317.24" r="4.2"/>
+<circle class="dot" cx="161.22" cy="296.36" r="4.2"/>
+<circle class="dot" cx="161.22" cy="275.87" r="4.2"/>
+<circle class="dot" cx="161.22" cy="381.45" r="4.2"/>
+<circle class="dot" cx="161.22" cy="378.01" r="4.2"/>
+<circle class="dot" cx="178.53" cy="378.62" r="4.2"/>
+<circle class="dot" cx="178.53" cy="262.31" r="4.2"/>
+<circle class="dot" cx="178.53" cy="327.87" r="4.2"/>
+<circle class="dot" cx="178.53" cy="326.04" r="4.2"/>
+<circle class="dot" cx="178.53" cy="374.15" r="4.2"/>
+<circle class="dot" cx="195.84" cy="373.94" r="4.2"/>
+<circle class="dot" cx="195.84" cy="260.61" r="4.2"/>
+<circle class="dot" cx="195.84" cy="372.32" r="4.2"/>
+<circle class="dot" cx="195.84" cy="276.63" r="4.2"/>
+<circle class="dot" cx="213.14" cy="250.40" r="4.2"/>
+<circle class="dot" cx="213.14" cy="182.80" r="4.2"/>
+<circle class="dot" cx="213.14" cy="321.12" r="4.2"/>
+<circle class="dot" cx="213.14" cy="270.57" r="4.2"/>
+<circle class="dot" cx="213.14" cy="267.24" r="4.2"/>
+<circle class="dot" cx="213.14" cy="385.42" r="4.2"/>
+<circle class="dot" cx="213.14" cy="252.60" r="4.2"/>
+<circle class="dot" cx="230.45" cy="246.97" r="4.2"/>
+<circle class="dot" cx="230.45" cy="195.73" r="4.2"/>
+<circle class="dot" cx="230.45" cy="309.65" r="4.2"/>
+<circle class="dot" cx="230.45" cy="261.54" r="4.2"/>
+<circle class="dot" cx="230.45" cy="266.58" r="4.2"/>
+<circle class="dot" cx="230.45" cy="383.92" r="4.2"/>
+<circle class="dot" cx="230.45" cy="255.61" r="4.2"/>
+<circle class="dot" cx="247.76" cy="244.22" r="4.2"/>
+<circle class="dot" cx="247.76" cy="298.52" r="4.2"/>
+<circle class="dot" cx="247.76" cy="259.07" r="4.2"/>
+<circle class="dot" cx="247.76" cy="274.71" r="4.2"/>
+<circle class="dot" cx="247.76" cy="383.19" r="4.2"/>
+<circle class="dot" cx="247.76" cy="199.21" r="4.2"/>
+<circle class="dot" cx="265.06" cy="298.58" r="4.2"/>
+<circle class="dot" cx="265.06" cy="252.43" r="4.2"/>
+<circle class="dot" cx="265.06" cy="279.83" r="4.2"/>
+<circle class="dot" cx="265.06" cy="205.74" r="4.2"/>
+<circle class="dot" cx="282.37" cy="236.93" r="4.2"/>
+<circle class="dot" cx="282.37" cy="247.96" r="4.2"/>
+<circle class="dot" cx="282.37" cy="283.87" r="4.2"/>
+<circle class="dot" cx="282.37" cy="211.68" r="4.2"/>
+<circle class="dot" cx="299.67" cy="281.69" r="4.2"/>
+<circle class="dot" cx="299.67" cy="296.83" r="4.2"/>
+<circle class="dot" cx="316.98" cy="518.61" r="4.2"/>
+<circle class="dot" cx="316.98" cy="251.19" r="4.2"/>
+<circle class="dot" cx="316.98" cy="241.98" r="4.2"/>
+<circle class="dot" cx="334.29" cy="519.19" r="4.2"/>
+<circle class="dot" cx="334.29" cy="272.49" r="4.2"/>
+<circle class="dot" cx="334.29" cy="404.77" r="4.2"/>
+<circle class="dot" cx="351.59" cy="381.48" r="4.2"/>
+<circle class="dot" cx="368.90" cy="379.66" r="4.2"/>
+<circle class="dot" cx="368.90" cy="341.84" r="4.2"/>
+<circle class="dot" cx="386.20" cy="405.48" r="4.2"/>
+<circle class="dot" cx="386.20" cy="363.85" r="4.2"/>
+<circle class="dot" cx="403.51" cy="518.42" r="4.2"/>
+<circle class="dot" cx="403.51" cy="399.66" r="4.2"/>
+<circle class="dot" cx="403.51" cy="311.42" r="4.2"/>
+<circle class="dot" cx="420.82" cy="520.34" r="4.2"/>
+<circle class="dot" cx="420.82" cy="341.02" r="4.2"/>
+<circle class="dot" cx="420.82" cy="496.38" r="4.2"/>
+<circle class="dot" cx="420.82" cy="300.16" r="4.2"/>
+<circle class="dot" cx="420.82" cy="343.44" r="4.2"/>
+<circle class="dot" cx="438.12" cy="455.28" r="4.2"/>
+<circle class="dot" cx="438.12" cy="518.73" r="4.2"/>
+<circle class="dot" cx="438.12" cy="352.35" r="4.2"/>
+<circle class="dot" cx="438.12" cy="494.09" r="4.2"/>
+<circle class="dot" cx="438.12" cy="311.58" r="4.2"/>
+<circle class="dot" cx="438.12" cy="370.00" r="4.2"/>
+<circle class="dot" cx="455.43" cy="456.41" r="4.2"/>
+<circle class="dot" cx="455.43" cy="379.32" r="4.2"/>
+<circle class="dot" cx="455.43" cy="240.32" r="4.2"/>
+<circle class="dot" cx="472.73" cy="465.96" r="4.2"/>
+<circle class="dot" cx="472.73" cy="462.07" r="4.2"/>
+<circle class="dot" cx="472.73" cy="293.18" r="4.2"/>
+<circle class="dot" cx="490.04" cy="484.94" r="4.2"/>
+<circle class="dot" cx="490.04" cy="458.38" r="4.2"/>
+<circle class="dot" cx="490.04" cy="291.65" r="4.2"/>
+<circle class="dot" cx="507.35" cy="458.61" r="4.2"/>
+<circle class="dot" cx="507.35" cy="471.40" r="4.2"/>
+<circle class="dot" cx="507.35" cy="365.03" r="4.2"/>
+<circle class="dot" cx="524.65" cy="393.48" r="4.2"/>
+<circle class="dot" cx="524.65" cy="371.38" r="4.2"/>
+<circle class="dot" cx="541.96" cy="387.36" r="4.2"/>
+<circle class="dot" cx="541.96" cy="275.44" r="4.2"/>
+<circle class="dot" cx="541.96" cy="364.36" r="4.2"/>
+<circle class="dot" cx="559.27" cy="373.48" r="4.2"/>
+<circle class="dot" cx="559.27" cy="348.78" r="4.2"/>
+<circle class="dot" cx="559.27" cy="266.33" r="4.2"/>
+<circle class="dot" cx="559.27" cy="389.83" r="4.2"/>
+<circle class="dot" cx="576.57" cy="367.69" r="4.2"/>
+<circle class="dot" cx="576.57" cy="356.04" r="4.2"/>
+<circle class="dot" cx="576.57" cy="359.07" r="4.2"/>
+<circle class="dot" cx="593.88" cy="267.75" r="4.2"/>
+<circle class="dot" cx="593.88" cy="368.90" r="4.2"/>
+<circle class="dot" cx="593.88" cy="296.91" r="4.2"/>
+<circle class="dot" cx="593.88" cy="389.81" r="4.2"/>
+<circle class="dot" cx="611.18" cy="270.62" r="4.2"/>
+<circle class="dot" cx="611.18" cy="269.29" r="4.2"/>
+<circle class="dot" cx="611.18" cy="328.84" r="4.2"/>
+<circle class="dot" cx="611.18" cy="342.17" r="4.2"/>
+<circle class="dot" cx="611.18" cy="370.79" r="4.2"/>
+<circle class="dot" cx="611.18" cy="440.51" r="4.2"/>
+<circle class="dot" cx="628.49" cy="287.60" r="4.2"/>
+<circle class="dot" cx="628.49" cy="370.56" r="4.2"/>
+<circle class="dot" cx="645.80" cy="471.63" r="4.2"/>
+<circle class="dot" cx="645.80" cy="475.93" r="4.2"/>
+<circle class="dot" cx="645.80" cy="370.80" r="4.2"/>
+<circle class="dot" cx="645.80" cy="452.43" r="4.2"/>
+<circle class="dot" cx="645.80" cy="298.10" r="4.2"/>
+<circle class="dot" cx="663.10" cy="467.74" r="4.2"/>
+<circle class="dot" cx="663.10" cy="446.06" r="4.2"/>
+<circle class="dot" cx="663.10" cy="382.50" r="4.2"/>
+<circle class="dot" cx="663.10" cy="376.08" r="4.2"/>
+<circle class="dot" cx="680.41" cy="450.98" r="4.2"/>
+<circle class="dot" cx="680.41" cy="470.29" r="4.2"/>
+<circle class="dot" cx="680.41" cy="419.20" r="4.2"/>
+<circle class="dot" cx="680.41" cy="360.04" r="4.2"/>
+<circle class="dot" cx="680.41" cy="370.67" r="4.2"/>
+<circle class="dot" cx="680.41" cy="420.61" r="4.2"/>
+<circle class="dot" cx="697.71" cy="429.50" r="4.2"/>
+<circle class="dot" cx="697.71" cy="381.31" r="4.2"/>
+<circle class="dot" cx="697.71" cy="346.83" r="4.2"/>
+<circle class="dot" cx="697.71" cy="414.53" r="4.2"/>
+<circle class="dot" cx="715.02" cy="372.94" r="4.2"/>
+<circle class="dot" cx="715.02" cy="419.33" r="4.2"/>
+<circle class="dot" cx="715.02" cy="358.46" r="4.2"/>
+<circle class="dot" cx="715.02" cy="364.73" r="4.2"/>
+<circle class="dot" cx="715.02" cy="358.64" r="4.2"/>
+<circle class="dot" cx="732.33" cy="482.09" r="4.2"/>
+<circle class="dot" cx="732.33" cy="449.08" r="4.2"/>
+<circle class="dot" cx="732.33" cy="415.25" r="4.2"/>
+<circle class="dot" cx="732.33" cy="418.39" r="4.2"/>
+<circle class="dot" cx="732.33" cy="431.88" r="4.2"/>
+<circle class="dot" cx="732.33" cy="362.00" r="4.2"/>
+<circle class="dot" cx="732.33" cy="416.82" r="4.2"/>
+<circle class="dot" cx="732.33" cy="332.45" r="4.2"/>
+<circle class="dot" cx="749.63" cy="480.99" r="4.2"/>
+<circle class="dot" cx="749.63" cy="436.42" r="4.2"/>
+<circle class="dot" cx="749.63" cy="405.68" r="4.2"/>
+<circle class="dot" cx="749.63" cy="415.84" r="4.2"/>
+<circle class="dot" cx="749.63" cy="410.93" r="4.2"/>
+<circle class="dot" cx="766.94" cy="473.06" r="4.2"/>
+<circle class="dot" cx="766.94" cy="364.06" r="4.2"/>
+<circle class="dot" cx="766.94" cy="410.58" r="4.2"/>
+<circle class="dot" cx="766.94" cy="367.48" r="4.2"/>
+<circle class="dot" cx="766.94" cy="428.77" r="4.2"/>
+<circle class="dot" cx="766.94" cy="416.71" r="4.2"/>
+<circle class="dot" cx="784.24" cy="473.86" r="4.2"/>
+<circle class="dot" cx="784.24" cy="437.73" r="4.2"/>
+<circle class="dot" cx="784.24" cy="370.27" r="4.2"/>
+<circle class="dot" cx="784.24" cy="440.21" r="4.2"/>
+<circle class="dot" cx="784.24" cy="414.50" r="4.2"/>
+<circle class="dot" cx="801.55" cy="317.54" r="4.2"/>
+<circle class="dot" cx="801.55" cy="431.30" r="4.2"/>
+<circle class="dot" cx="801.55" cy="370.04" r="4.2"/>
+<circle class="dot" cx="801.55" cy="418.83" r="4.2"/>
+<circle class="dot" cx="801.55" cy="360.02" r="4.2"/>
+<circle class="dot" cx="801.55" cy="439.42" r="4.2"/>
+<circle class="dot" cx="818.86" cy="439.27" r="4.2"/>
+<circle class="dot" cx="818.86" cy="443.79" r="4.2"/>
+<circle class="dot" cx="818.86" cy="346.08" r="4.2"/>
+<circle class="dot" cx="818.86" cy="419.06" r="4.2"/>
+<circle class="dot" cx="818.86" cy="383.37" r="4.2"/>
+<circle class="dot" cx="818.86" cy="445.34" r="4.2"/>
+<circle class="dot" cx="818.86" cy="369.96" r="4.2"/>
+<circle class="dot" cx="836.16" cy="299.14" r="4.2"/>
+<circle class="dot" cx="836.16" cy="445.60" r="4.2"/>
+<circle class="dot" cx="836.16" cy="449.28" r="4.2"/>
+<circle class="dot" cx="836.16" cy="393.19" r="4.2"/>
+<circle class="dot" cx="836.16" cy="429.21" r="4.2"/>
+<circle class="dot" cx="836.16" cy="388.73" r="4.2"/>
+<circle class="dot" cx="836.16" cy="363.01" r="4.2"/>
+<circle class="dot" cx="836.16" cy="377.99" r="4.2"/>
+<circle class="dot" cx="853.47" cy="299.93" r="4.2"/>
+<circle class="dot" cx="853.47" cy="366.41" r="4.2"/>
+<circle class="dot" cx="853.47" cy="373.49" r="4.2"/>
+<circle class="dot" cx="853.47" cy="170.05" r="4.2"/>
+<circle class="dot" cx="853.47" cy="447.08" r="4.2"/>
+<circle class="dot" cx="853.47" cy="379.90" r="4.2"/>
+<circle class="dot" cx="853.47" cy="444.18" r="4.2"/>
+<circle class="dot" cx="853.47" cy="429.54" r="4.2"/>
+<circle class="dot" cx="853.47" cy="366.63" r="4.2"/>
+<circle class="dot" cx="870.78" cy="340.76" r="4.2"/>
+<circle class="dot" cx="870.78" cy="307.60" r="4.2"/>
+<circle class="dot" cx="870.78" cy="356.01" r="4.2"/>
+<circle class="dot" cx="870.78" cy="367.58" r="4.2"/>
+<circle class="dot" cx="870.78" cy="272.26" r="4.2"/>
+<circle class="dot" cx="870.78" cy="451.98" r="4.2"/>
+<circle class="dot" cx="870.78" cy="438.95" r="4.2"/>
+<circle class="dot" cx="870.78" cy="427.70" r="4.2"/>
+<circle class="dot" cx="870.78" cy="358.39" r="4.2"/>
+<circle class="dot" cx="888.08" cy="342.90" r="4.2"/>
+<circle class="dot" cx="888.08" cy="359.15" r="4.2"/>
+<circle class="dot" cx="888.08" cy="429.06" r="4.2"/>
+<circle class="dot" cx="888.08" cy="333.85" r="4.2"/>
+<circle class="dot" cx="905.39" cy="342.41" r="4.2"/>
+<circle class="dot" cx="905.39" cy="387.21" r="4.2"/>
+<circle class="dot" cx="905.39" cy="422.52" r="4.2"/>
+<circle class="dot" cx="905.39" cy="433.04" r="4.2"/>
+<circle class="dot" cx="905.39" cy="323.99" r="4.2"/>
+<circle class="dot" cx="905.39" cy="417.49" r="4.2"/>
+<circle class="dot" cx="905.39" cy="423.72" r="4.2"/>
+<circle class="dot" cx="905.39" cy="386.94" r="4.2"/>
+<circle class="dot" cx="922.69" cy="304.89" r="4.2"/>
+<circle class="dot" cx="922.69" cy="125.82" r="4.2"/>
+<circle class="dot" cx="922.69" cy="473.10" r="4.2"/>
+<circle class="dot" cx="922.69" cy="383.40" r="4.2"/>
+<circle class="dot" cx="922.69" cy="355.86" r="4.2"/>
+<circle class="dot" cx="922.69" cy="413.60" r="4.2"/>
+<circle class="dot" cx="940.00" cy="401.17" r="4.2"/>
+<circle class="dot" cx="940.00" cy="291.37" r="4.2"/>
+<circle class="dot" cx="940.00" cy="182.00" r="4.2"/>
+<circle class="dot" cx="940.00" cy="470.01" r="4.2"/>
+<circle class="dot" cx="940.00" cy="341.56" r="4.2"/>
+<path class="trend" d="M 92.00 316.07 L 940.00 402.09"/>
+<circle class="focus" cx="940.00" cy="182.00" r="4.6"/>
+<text class="label" x="950.00" y="175.00">Dominica</text>
+<circle class="focus" cx="940.00" cy="291.37" r="4.6"/>
+<text class="label" x="950.00" y="285.37">Brazil</text>
+<circle class="focus" cx="940.00" cy="341.56" r="4.6"/>
+<text class="label" x="950.00" y="355.56">St. Vincent</text>
+<circle class="focus" cx="940.00" cy="401.17" r="4.6"/>
+<text class="label" x="878.00" y="417.17">Albania</text>
+<circle class="focus" cx="940.00" cy="470.01" r="4.6"/>
+<text class="label" x="836.00" y="486.01">Dominican Rep.</text>
+<circle class="focus" cx="438.12" cy="518.73" r="4.6"/>
+<text class="label" x="356.12" y="520.73">Bahamas</text>
+<circle class="focus" cx="334.29" cy="519.19" r="4.6"/>
+<text class="label" x="344.29" y="543.19">Hong Kong</text>
+<circle class="focus" cx="230.45" cy="195.73" r="4.6"/>
+<text class="label" x="240.45" y="187.73">Belgium</text>
+<text class="subtitle" x="92" y="656">n=226 country-year observations; mean=34.6%, median=33.6%</text>
+</svg>
