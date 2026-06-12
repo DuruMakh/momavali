@@ -397,6 +397,7 @@
     const tooltip = document.getElementById("tooltip");
 
     const getData = () => datasets[activeMetric];
+    const getAggregateData = () => activeMetric === "spending" ? getData().filter(d => d.year >= 1950) : getData();
     const getMeta = () => metricMeta[activeMetric];
     const extent = (values) => [Math.min(...values), Math.max(...values)];
     const median = (values) => {
@@ -433,7 +434,8 @@
 
     function setKpis() {
       const data = getData();
-      const values = data.map(d => d.value);
+      const aggregateData = getAggregateData();
+      const values = aggregateData.map(d => d.value);
       const years = extent(data.map(d => d.year));
       document.getElementById("kpiCountries").textContent = data.length;
       document.getElementById("kpiYears").textContent = `${years[0]}-${years[1]}`;
